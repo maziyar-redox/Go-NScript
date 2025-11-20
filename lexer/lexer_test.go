@@ -12,8 +12,14 @@ type TestTokens struct {
 }
 
 func TestNextToken(t *testing.T) {
-	input := ``
-	tests := []TestTokens{}
+	input := `let x = 5;`
+	tests := []TestTokens{
+		{token.LET, "let"},
+		{token.IDENT, "x"},
+		{token.ASSIGN, "="},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+	}
 	l := New(input)
 	for i, TokenTypes := range tests {
 		tok := l.NextToken()

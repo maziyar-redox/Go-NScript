@@ -11,23 +11,29 @@ type Lexer struct {
 	ch				byte // current char under examination
 }
 
+// ====================== //
+// New funcion for initiating input and lexing analysis
+// ====================== //
+
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
-func isDigit(ch byte) bool {
-	return '0' <= ch && ch <= '9'
-}
-
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
-}
+// ====================== //
+// This is just a little helper function that returns a type of Token for
+// Clean code purposes
+// ====================== //
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
+
+// ====================== //
+// This helper function will help us to read peekChar and now what is coming after
+// Current character
+// ====================== //
 
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
@@ -37,11 +43,20 @@ func (l *Lexer) peekChar() byte {
 	}
 }
 
+// ====================== //
+// Helper function for skiping white spaces
+// ====================== //
+
 func (l *Lexer) skipWhiteSpace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
 }
+
+// ====================== //
+// each time the NextToken or New function is called, This method(readChar) will be called too
+// And it will advence our position in characters, changing position and readPosition in input
+// ====================== //
 
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
@@ -53,12 +68,28 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+// ====================== //
+// Reading JUST identifiers with help of is letter
+// ====================== //
+
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
+}
+
+// ====================== //
+// Reading number with help of a helper function
+// ====================== //
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
 
 func (l *Lexer) readNumber() string {
@@ -68,6 +99,10 @@ func (l *Lexer) readNumber() string {
 	}
 	return l.input[position:l.position]
 }
+
+// ====================== //
+// Main Next Token function
+// ====================== //
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
