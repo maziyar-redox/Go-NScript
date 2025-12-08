@@ -104,6 +104,11 @@ func (l *Lexer) readNumber() string {
 // Main Next Token function
 // ====================== //
 
+
+// expression1 
+
+// let                      x                = 4;
+
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhiteSpace()

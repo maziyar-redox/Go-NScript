@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/maziyar-redox/Go-NScript/eval"
 	"github.com/maziyar-redox/Go-NScript/lexer"
+	"github.com/maziyar-redox/Go-NScript/object"
 	"github.com/maziyar-redox/Go-NScript/parser"
 )
 
@@ -13,6 +15,8 @@ const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
+	
 	for {
 		fmt.Print(PROMPT)
 		scanned := scanner.Scan()
@@ -30,8 +34,11 @@ func Start(in io.Reader, out io.Writer) {
 			printParserErrors(out, p.Errors())
 			continue
 		}
-		io.WriteString(out, program.String())
-		io.WriteString(out, "\n")
+		evalulated := eval.Eval(program, env)
+		if evalulated != nil {
+			io.WriteString(out, evalulated.Inspect())
+			io.WriteString(out, "\n")
+		}
 	}
 }
 
